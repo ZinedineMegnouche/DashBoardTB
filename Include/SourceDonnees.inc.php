@@ -10,6 +10,8 @@ function SGBDConnect()
         exit();
     }
     // test
+    
+    // test222
     return $connexion;
 }
 ?>
