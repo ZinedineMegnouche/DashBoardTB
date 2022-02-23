@@ -1,17 +1,38 @@
 <?php
 function SGBDConnect()
 {
-    try {
-       $connexion = new PDO('mysql:host=localhost;dbname=TickAndBox', 'root', 'root'); 
-       $connexion->query('SET NAMES UTF8');
-       $connexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);        
-    } catch (PDOException $e) {
-        echo 'Erreur !: ' . $e->getMessage() . '<br />';
-        exit();
+    $db_username = 'root';
+    $db_password = 'root';
+    $db_name     = 'TickAndBox';
+    $db_host     = 'localhost';
+    $db = mysqli_connect($db_host, $db_username, $db_password,$db_name) or die('could not connect to database');
+    return $db;
+}
+function isConnectionValide($username,$password){
+    $requete = "SELECT idTB FROM connexionTB where 
+    mailConnexion = '".$username."' and motDePasse = '".$password."' ";
+    $db = SGBDConnect();
+    $exec_requete = mysqli_query($db,$requete);
+    $count = $exec_requete->num_rows;
+    if($count == 0){
+        return false;
     }
-    // test
-    
-    // test222
-    return $connexion;
+    return true;
+}
+function getIdConnexionTB($username,$password){
+    $requete = "SELECT idTB FROM connexionTB where 
+    mailConnexion = '".$username."' and motDePasse = '".$password."' ";
+    $db = SGBDConnect();
+    $exec_requete = mysqli_query($db,$requete);
+    $count = $exec_requete->num_rows;
+    $reponse      = mysqli_fetch_array($exec_requete);
+    return $reponse['idTB'];
+}
+function getNameTBById($id){
+    $requete = "SELECT nomComplet FROM TandB where idTB = ".$id;
+    $db = SGBDConnect();
+    $exec_requete = mysqli_query($db,$requete);
+    $reponse      = mysqli_fetch_array($exec_requete);
+    return $nameUser = $reponse['nomComplet'];
 }
 ?>

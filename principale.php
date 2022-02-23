@@ -21,6 +21,7 @@
                    }
                 }
                 else if($_SESSION['username'] !== ""){
+                    
                     $user = $_SESSION['username'];
                     // afficher un message
                     echo "<br>Bonjour $user, vous êtes connectés";
