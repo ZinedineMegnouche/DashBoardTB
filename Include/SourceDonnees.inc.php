@@ -9,6 +9,7 @@ function SGBDConnect()
         echo 'Erreur !: ' . $e->getMessage() . '<br />';
         exit();
     }
+    // test
     return $connexion;
 }
 ?>
