@@ -8,8 +8,16 @@ function SGBDConnect()
     $db = mysqli_connect($db_host, $db_username, $db_password,$db_name) or die('could not connect to database');
     return $db;
 }
-function isConnectionValide($username,$password){
-    $requete = "SELECT idTB FROM connexionTB where 
+function isConnectionValide($username,$password,$isTickAndBox){
+    if($isTickAndBox == true){
+        $table = 'connexionTB';
+        $id = 'idTB';
+    }
+    else{
+        $table = 'connexionClient';
+        $id = 'idClient';
+    }
+    $requete = "SELECT ".$id." FROM ".$table." where 
     mailConnexion = '".$username."' and motDePasse = '".$password."' ";
     $db = SGBDConnect();
     $exec_requete = mysqli_query($db,$requete);
@@ -19,17 +27,33 @@ function isConnectionValide($username,$password){
     }
     return true;
 }
-function getIdConnexionTB($username,$password){
-    $requete = "SELECT idTB FROM connexionTB where 
+function getIdConnexionTB($username,$password,$isTickAndBox){
+    if($isTickAndBox == true){
+        $table = 'connexionTB';
+        $id = 'idTB';
+    }
+    else{
+        $table = 'connexionClient';
+        $id = 'idClient';
+    }
+    $requete = "SELECT ".$id." FROM ".$table." where 
     mailConnexion = '".$username."' and motDePasse = '".$password."' ";
     $db = SGBDConnect();
     $exec_requete = mysqli_query($db,$requete);
     $count = $exec_requete->num_rows;
     $reponse      = mysqli_fetch_array($exec_requete);
-    return $reponse['idTB'];
+    return $reponse[$id];
 }
-function getNameTBById($id){
-    $requete = "SELECT nomComplet FROM TandB where idTB = ".$id;
+function getNameById($id,$isTickAndBox){
+    if($isTickAndBox){
+        $table = 'TandB';
+        $profil = 'idTB';
+    }
+    else{
+        $table = 'Client';
+        $profil = 'idClient';
+    }
+    $requete = "SELECT nomComplet FROM ".$table." where ".$profil." = ".$id;
     $db = SGBDConnect();
     $exec_requete = mysqli_query($db,$requete);
     $reponse      = mysqli_fetch_array($exec_requete);

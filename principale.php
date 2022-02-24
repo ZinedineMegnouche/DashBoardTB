@@ -12,6 +12,8 @@
             <!-- tester si l'utilisateur est connecté -->
             <?php
                 session_start();
+                echo "le mail est : ";
+                echo $_SESSION['mail'];
                 if(isset($_GET['deconnexion']))
                 { 
                    if($_GET['deconnexion']==true)
@@ -20,7 +22,18 @@
                       header("location:connexion.php");
                    }
                 }
-                else if($_SESSION['username'] !== ""){
+               // echo $_SESSION['mail'];
+                else if($_SESSION['mail'] !== ""){
+                    //echo "wooow!!!";
+                   // if(str_contains($_SESSION['mail'],'tickandbox.com')){
+                        
+                     //}
+                    if($_SESSION['profil'] == 'tb'){
+                        echo '<h1>TickAndBox</h1>';
+                    }
+                    else{
+                        echo '<h1>Client</h1>';
+                    }
                     
                     $user = $_SESSION['username'];
                     // afficher un message
