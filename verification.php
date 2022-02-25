@@ -61,11 +61,11 @@ if(isset($_POST['mail']) && isset($_POST['password']))
         }
         else
         {
-           //header('Location: connexion.php?erreur=1'); // utilisateur ou mot de passe incorrect
-           echo 'mail ='.$mail;
-           echo ' pwd ='.$password;
-           echo ' istb ='.isTickAndBox($mail);
-           echo ' isConnection valide ='.isConnectionValide($mail,$password,$isTB);
+           header('Location: connexion.php?erreur=1'); // utilisateur ou mot de passe incorrect
+           //echo 'mail ='.$mail;
+          // echo ' pwd ='.$password;
+          // echo ' istb ='.isTickAndBox($mail);
+           //echo ' isConnection valide ='.isConnectionValide($mail,$password,$isTB);
         }
     }
     else
