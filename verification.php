@@ -17,8 +17,8 @@ if(isset($_POST['mail']) && isset($_POST['password']))
 
     //$username = mysqli_real_escape_string($db,htmlspecialchars($_POST['username'])); 
     //$password = mysqli_real_escape_string($db,htmlspecialchars($_POST['password']));
-    $mail = $_POST['mail'];
-    $password = $_POST['password'];
+    $mail = htmlspecialchars($_POST['mail']);
+    $password = htmlspecialchars($_POST['password']);
     
     if($mail !== "" && $password !== "")
     {
@@ -28,44 +28,21 @@ if(isset($_POST['mail']) && isset($_POST['password']))
         {
         $id = getIdConnexionTB($mail,$password,$isTB);
         $nameUser = getNameById($id,$isTB);
-        //echo '<h1>ID= '.$id.'</h1>';
-          //  $requete = "SELECT nomComplet FROM TandB where idTB = ".$id;
-           // $exec_requete = mysqli_query($db,$requete);
-          //  $reponse      = mysqli_fetch_array($exec_requete);
-           // $nameUser = $reponse['nomComplet'];
-        //echo '<h1>ID= '.$nameUser.'</h1>';
-
-        //SELECT nomComplet FROM TandB WHERE idTB = 1
-       // $requete = "SELECT count(*) FROM connexionTB where 
-        //mailConnexion = '".$username."' and motDePasse = '".$password."' ";
         $_SESSION['id'] = $id;
         $_SESSION['username'] = $nameUser;
         $_SESSION['mail'] = $mail;
+        $_SESSION['restraint'] = isModeRestraint($_SESSION['id']);
         if ($isTB){
             $_SESSION['profil'] = 'tb';
         }
         else{
             $_SESSION['profil'] = 'client';
         }
-       // echo 'id = '.$_SESSION['id'];
-        //echo 'username = '.$_SESSION['username'];
-       // echo 'mail = '.$_SESSION['mail'];
-       // echo '<h2></h2>';
-        //if(str_contains($username,'tickandbox.com')){
-           // echo '<h1>TICK AND BOX </h1>';
-        //}
-       // else{
-         //   echo '<h1>CLIENT</h1>';
-        //}
         header('Location: principale.php');
         }
         else
         {
-           header('Location: connexion.php?erreur=1'); // utilisateur ou mot de passe incorrect
-           //echo 'mail ='.$mail;
-          // echo ' pwd ='.$password;
-          // echo ' istb ='.isTickAndBox($mail);
-           //echo ' isConnection valide ='.isConnectionValide($mail,$password,$isTB);
+           header('Location: connexion.php?erreur=1');
         }
     }
     else
