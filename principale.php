@@ -16,7 +16,7 @@
             <?php
 session_start();
 /* --------------------------A supprimer -------------------------- */
-/* $_SESSION['id'] = 1;
+/*$_SESSION['id'] = 1;
 $_SESSION['username'] = "zinedine";
 $_SESSION['mail'] = "zinedine.megnouche@tickandbox.com";
 $_SESSION['profil'] = 'tb';
@@ -24,13 +24,13 @@ $_SESSION['restraint'] = isModeRestraint($_SESSION['id']);
 echo "mode restraint =";*/
 // echo isModeRestraint($_SESSION['id']);
 
-$_SESSION['id'] = 4;
+/*$_SESSION['id'] = 4;
 $_SESSION['username'] = "alisée";
 $_SESSION['mail'] = "alise.berutti@tickandbox.com";
 $_SESSION['profil'] = 'tb';
-$_SESSION['restraint'] = isModeRestraint($_SESSION['id']);
-echo "mode restraint =";
-echo isModeRestraint($_SESSION['id']);
+$_SESSION['restraint'] = isModeRestraint($_SESSION['id']);*/
+//echo "mode restraint =";
+//echo isModeRestraint($_SESSION['id']);
 
 /* ------------------------------------------------------------------- */
 //  echo "le mail est : ";
@@ -54,12 +54,14 @@ else if ($_SESSION['mail'] !== "") {
         //echo 'Poste:'.$_SESSION['poste'];
         if ($poste == 'Administrateur') {
             header("location:adminDashboard.php");
-        } else if ($poste == 'Producteur') {
-            echo "vous etes un prod";
-            //require_once 'prodDashboard.php';
         } else if ($poste == 'Commercial') {
             header("location:comDashboard.php");
-            echo "vous etes commercial";
+        } else if ($poste == "Ressource Humaines") {
+            header("location:rhDashboard.php");
+        } else if ($_SESSION['poste'] == "Producteur") {
+            header("location:prodDashboard.php");
+        } else if ($_SESSION['poste'] == "Chef de projet") {
+            header("location:prodDashboard.php");
         }
     } else {
         header("location:clientDashboard.php");
@@ -67,6 +69,8 @@ else if ($_SESSION['mail'] !== "") {
 
     $user = $_SESSION['username'];
     // afficher un message
+    $poste = $_SESSION['poste'];
+    echo "<p>Poste : $poste</p>";
     echo "<br>Bonjour $user, vous êtes connectés";
 
 }

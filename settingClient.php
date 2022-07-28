@@ -20,45 +20,47 @@ session_start();
     <a href='principale.php?deconnexion=true'><span>Déconnexion</span></a>
     <h1>CLIENT DASHBOARD</h1>
     <?php
-    echo "<p>Bonjour," . $_SESSION['username'] . "</p>";
-    ?>
+echo "<p>Bonjour," . $_SESSION['username'] . "</p>";
+?>
     <div id="gauche">
                 <ul>
                     <li>Menu</li>
                         <ul>
+                        <li><a href="clientDashboard.php">Accueil</a></li>
                         <li><a href="callTrackingClient.php">CallTracking</a></li>
                         <li><a href="AnalyticsClient.php">Google Analytics</a></li>
                         <li><a href="InstagramClient.php">Instagram</a></li>
-                        <li><a href="settingClient.php">Paramètres</a></li>
+                        <li><a href="settingClient.php">Profil</a></li>
+                        <li><a href="changepwdClient.php">Sécurité</a></li>
                         </ul>
                 </ul>
         </div>
         <div id="droite">
             <h3>Paramètres du compte</h3>
             <?php
-        $client = getInfoClient($_SESSION['id']);
-        echo '<form name="formAddClient" method="post">';
-        echo formInputText2('Nom Complet', 'Name', 'Name', $client['nomComplet'], 50, 2, 50, 10, true, true);
-        echo formInputText2('Nom Entreprise', 'Enterprise', 'Enterprise', $client['nomEntreprise'], 50, 2, 200, 20, true, true);
-        echo formInputText2('Mail', 'mail', 'mail', $client['mail'], 50, 2, 150, 30, true, true);
-        echo formInputText2('Telephone', 'phone', 'phone', $client['telephone'], 10, 10, 10, 40, true, false);
-        echo formInputText2('Adresse', 'adress', 'adress', $client['adresse'], 50, 2, 250, 50, true, false);
-        echo formInputText2('SIRET', 'siret', 'siret', $client['siret'], 50, 2, 50, 60, true, false);
-        echo formInputText2('Date de signature du contrat', 'dateSignature', 'dateSignature', $client['dateSignature'], 50, 2, 50, 70, true, false);
-        echo formInputText2('Durée du contrat', 'dureeContrat', 'dureeContrat', $client['contrat'], 50, 2, 50, 80, true, false);
-        echo formInputText2('Ville', 'localisation', 'localisation', $client['localisation'], 50, 2, 50, 90, true, false);
-        echo formInputText2('Secteur Activité ', 'secteurActivite', 'secteurActivite', $client['secteurActivite'], 50, 2, 50, 100, true, false);
-        echo formInputText2('Type de Forfait', 'typeForfait', 'typeForfait', $client['nomForfait'], 50, 2, 50, 110, true, false);
-        echo formInputText2('Description de l\'offre', 'descriptionOffre', 'descriptionOffre', $client['description'], 50, 2, 50, 120, true, false);
-        echo formInputText2('Tarif du Forfait', 'tarif', 'tarif', $client['tarif'].'€', 50, 2, 50, 130, true, false);
+$client = getInfoClient($_SESSION['id']);
+echo '<form name="formAddClient" method="post">';
+echo formInputText2('Nom Complet', 'Name', 'Name', $client['nomComplet'], 50, 2, 50, 10, true, true);
+echo formInputText2('Nom Entreprise', 'Enterprise', 'Enterprise', $client['nomEntreprise'], 50, 2, 200, 20, true, true);
+echo formInputText2('Mail', 'mail', 'mail', $client['mail'], 50, 2, 150, 30, true, true);
+echo formInputText2('Telephone', 'phone', 'phone', $client['telephone'], 10, 10, 10, 40, true, false);
+echo formInputText2('Adresse', 'adress', 'adress', $client['adresse'], 50, 2, 250, 50, true, false);
+echo formInputText2('SIRET', 'siret', 'siret', $client['siret'], 50, 2, 50, 60, true, false);
+echo formInputText2('Date de signature du contrat', 'dateSignature', 'dateSignature', $client['dateSignature'], 50, 2, 50, 70, true, false);
+echo formInputText2('Durée du contrat', 'dureeContrat', 'dureeContrat', $client['dureeEngagement'], 50, 2, 50, 80, true, false);
+echo formInputText2('Ville', 'localisation', 'localisation', $client['localisation'], 50, 2, 50, 90, true, false);
+echo formInputText2('Secteur Activité ', 'secteurActivite', 'secteurActivite', $client['secteurActivite'], 50, 2, 50, 100, true, false);
+echo formInputText2('Type de Forfait', 'typeForfait', 'typeForfait', $client['nomForfait'], 50, 2, 50, 110, true, false);
+echo formInputText2('Description de l\'offre', 'descriptionOffre', 'descriptionOffre', $client['description'], 50, 2, 50, 120, true, false);
+echo formInputText2('Tarif du Forfait', 'tarif', 'tarif', $client['tarif'] . '€', 50, 2, 50, 130, true, false);
 
-        //compte insta
-        // mandat sepa
-        //cni
-        //rib
-        //contrat
-        echo '</form>';
-            ?>
+//compte insta
+// mandat sepa
+//cni
+//rib
+//contrat
+echo '</form>';
+?>
         </div>
     </body>
 </html>

@@ -237,10 +237,15 @@ function addCallTrackingDB($num, $libelle, $idClient)
  */
 function addClientConnexion($mail, $id)
 {
-    $mdp = random_mdp();
-    $requete = "INSERT INTO `connexionClient` (mailConnexion, motDePasse, idClient) VALUES ('$mail', '$mdp', '$id')";
+    $mdp = "Azerty1234";
+//$mdp = random_mdp();
+    $hashed_password = md5($mdp);
+
+    $requete = "INSERT INTO `connexionClient` (mailConnexion, motDePasse, idClient) VALUES ('$mail', '$hashed_password', '$id')";
     $db = SGBDConnect();
     mysqli_query($db, $requete);
+    sendpwd($mail, $mdp);
+
 }
 
 /**
@@ -251,10 +256,24 @@ function addClientConnexion($mail, $id)
  */
 function addTandBConnexion($mail, $id)
 {
-    $mdp = random_mdp();
-    $requete = "INSERT INTO `connexionTB` (mailConnexion, motDePasse, idTB) VALUES ('$mail', '$mdp', '$id')";
+    $mdp = "Azerty1234";
+    //$mdp = random_mdp();
+    $hashed_password = md5($mdp);
+    $requete = "INSERT INTO `connexionTB` (mailConnexion, motDePasse, idTB) VALUES ('$mail', '$hashed_password', '$id')";
     $db = SGBDConnect();
     mysqli_query($db, $requete);
+    sendpwd($mail, $mdp);
+}
+function sendpwd($mail, $pwd)
+{
+    $to = $mail;
+    $message = "Bonjour, voici vos identifiants pour vous connecter à votre espace TickandBox:\n Identifiant : $mail, mot de passe temporaire : $pwd \n veuillez changez votre mot de passe dans l'espace \"Sécurite\" de votre compte";
+    $subject = 'Accès plateforme Tickandbox.com';
+    $headers = 'From: zinedine.megnouche@tickandbox.com' . "\r\n" .
+    'Reply-To: zinedine.megnouche@tickandbox.com' . "\r\n" .
+    'X-Mailer: PHP/' . phpversion();
+    mail($to, $subject, $message, $headers);
+
 }
 /**
  * Ajoute un employé a la base de données
@@ -272,7 +291,7 @@ function addEmploye($nomComplet, $mail, $telephone, $typeContrat, $adresse, $dat
     $requete = "INSERT INTO TandB (idTB, nomComplet, mail, telephone, photo, adresse, typeContrat, DateSignature, modeRestraint, idPoste) VALUES (NULL, '$nomComplet', '$mail', '$telephone', 'non', '$adresse', '$typeContrat', '$dateSignature', '0', '$poste')";
     $db = SGBDConnect();
     mysqli_query($db, $requete);
-    echo "<p>Client ajouté avec succès</p>";
+    echo "<p>Employé ajouté avec succès</p>";
     $id = getIdTandB($mail);
     addTandBConnexion($mail, $id);
 }
@@ -314,12 +333,20 @@ function getClientByIdCom($id)
  * @param String $poste poste de l'employé dans l'entreprise
  * @return void
  */
-function modifyEmploye($idTB, $nomComplet, $mail, $telephone, $typeContrat, $adresse, $dateSignature, $poste)
+function modifyEmploye($idTB, $nomComplet, $mail, $telephone, $typeContrat, $adresse, $dateSignature, $poste, $restraint)
 {
-    $requete = "UPDATE TandB set nomComplet='$nomComplet',mail='$mail',telephone= '$telephone',photo= '', adresse='$adresse', typeContrat='$typeContrat',DateSignature='$dateSignature',idPoste= $poste, modeRestraint=0 where idTB = $idTB";
+    $requete = "UPDATE TandB set nomComplet='$nomComplet',mail='$mail',telephone= '$telephone',photo= '', adresse='$adresse', typeContrat='$typeContrat',DateSignature='$dateSignature',idPoste= $poste, modeRestraint= $restraint where idTB = $idTB";
     $db = SGBDConnect();
     mysqli_query($db, $requete);
-    echo "<p>Client modifié avec succès</p>";
+    echo "<p>Employé modifié avec succès</p>";
+}
+
+function modifyOffre($idOffre, $nom, $tarif, $description)
+{
+    $requete = "UPDATE Forfait set nomForfait='$nom',tarif ='$tarif',description= '$description' where idForfait = $idOffre";
+    $db = SGBDConnect();
+    mysqli_query($db, $requete);
+    echo "<p>Offre modifié avec succès</p>";
 }
 
 /**
@@ -365,7 +392,7 @@ function getCommercialClient($id)
     $db = SGBDConnect();
     $exec_requete = mysqli_query($db, $requete);
     while (list($name, $mail) = mysqli_fetch_array($exec_requete)) {
-        echo '<p>' . $name . ' - ' . $mail . ' - </p>';
+        echo '<p>' . $name . ' - ' . $mail . '</p>';
     }
 }
 /**
@@ -423,6 +450,21 @@ function getClientById($id)
  * @param String $id id du client recherché
  * @return Array Tableau contenant les informations d'un client
  */
+function getOffreById($id)
+{
+    $requete = "SELECT nomForfait, tarif, description FROM Forfait where idForfait = $id";
+
+    $db = SGBDConnect();
+    $exec_requete = mysqli_query($db, $requete);
+    $Offres = [];
+    while (list($name, $tarif, $description) = mysqli_fetch_array($exec_requete)) {
+        $Offres['nomForfait'] = $name;
+        $Offres['tarif'] = $tarif;
+        $Offres['description'] = $description;
+    }
+    return $Offres;
+}
+
 function getEmployeeById($id)
 {
     $requete = "SELECT nomComplet, mail, telephone, photo, adresse, dateSignature, modeRestraint, idPoste, typeContrat FROM TandB where idTB = $id ";
@@ -454,11 +496,12 @@ function getClient()
     $exec_requete = mysqli_query($db, $requete);
     while (list($id, $name, $enterprise, $mail, $adress, $tel, $id) = mysqli_fetch_array($exec_requete)) {
         echo '<form>';
-        echo "<p><strong>$name - $enterprise - $mail - $adress</strong></p>";
+        echo "<p><strong>$name - $enterprise - $mail - $adress - $tel</strong></p>";
         echo "<p>Commercial attitré: </p>";
         getCommercialClient($id);
         $num = "+33" . substr($tel, 1, 10);
-        $numCT = getNumCallTrackByNum($num);
+        $numCT = null;
+        //$numCT = getNumCallTrackByNum($num);
         if ($numCT != null) {
             echo "<p>Numéros de call tracking</p>";
             echo "<ul>";
@@ -520,6 +563,15 @@ function getListEmploye()
     return $exec_requete;
 }
 
+function getOffresTBListe()
+{
+    $requete = "SELECT idForfait,nomForfait, tarif, description FROM Forfait ";
+    $db = SGBDConnect();
+    $exec_requete = mysqli_query($db, $requete);
+    return $exec_requete;
+
+}
+
 /**
  * Récupere la liste des poste au sein de tickandbox
  * @return Array tableau contenant la liste des postes
@@ -545,6 +597,16 @@ function getInfoClient($idClient)
     $res = mysqli_query($db, $req);
     return mysqli_fetch_assoc($res);
 }
+
+function getInfoTB($idTB)
+{
+    // On créé la requête
+    $req = "SELECT * FROM TandB inner join Poste on Poste.idPoste = TandB.idPoste WHERE idTB = $idTB";
+    $db = SGBDConnect();
+    $res = mysqli_query($db, $req);
+    return mysqli_fetch_assoc($res);
+}
+
 function getSecteurActiviteById($idSecteur)
 {
     // On créé la requête
@@ -568,4 +630,38 @@ function getGoogleAnalytics($id)
     $exec_requete = mysqli_query($db, $requete);
     $reponse = mysqli_fetch_array($exec_requete);
     return $reponse['compteAnalytics'];
+}
+
+function getOffresTB()
+{
+    $requete = "SELECT nomForfait, tarif, description FROM Forfait ";
+    $db = SGBDConnect();
+    $exec_requete = mysqli_query($db, $requete);
+    $Offres = [];
+    while (list($name, $tarif, $description) = mysqli_fetch_array($exec_requete)) {
+        echo "<form>";
+        echo "<h3>$name</h3>";
+        echo "<p>$description</p>";
+        echo "<strong>$tarif</strong>";
+        echo "</form>";
+    }
+}
+
+//UPDATE connexionTB set motDePasse = 'test1234' WHERE idTB = 4
+function modifpwdTB($idTB, $password)
+{
+    $hashed_password = md5($password);
+    $requete = "UPDATE connexionTB set motDePasse = '$hashed_password' WHERE idTB = $idTB";
+    $db = SGBDConnect();
+    mysqli_query($db, $requete);
+    echo "<p>Mot de passe modifié avec succès</p>";
+}
+
+function modifpwdClient($idClient, $password)
+{
+    $hashed_password = md5($password);
+    $requete = "UPDATE connexionClient set motDePasse = '$hashed_password' WHERE idClient = $idClient";
+    $db = SGBDConnect();
+    mysqli_query($db, $requete);
+    echo "<p>Mot de passe modifié avec succès</p>";
 }

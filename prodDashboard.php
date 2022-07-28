@@ -1,11 +1,5 @@
 <?php
-require 'Include/functions.php';
-require 'Include/SourceDonnees.inc.php';
-require 'Include/helpersLibrary.inc.php';
-if (!isset($_SESSION)) {
-    session_start();
-}
-
+//require_once 'Include/SourceDonnees.inc.php';
 ?>
 <html>
     <head>
@@ -21,31 +15,17 @@ if (!isset($_SESSION)) {
     </head>
     <body>
 <a href='principale.php?deconnexion=true'><span>Déconnexion</span></a>
-<h1>CLIENT DASHBOARD</h1>
-<?php
-echo "<p>Bonjour," . $_SESSION['username'] . "</p>";
-?>
+<h1>PROD DASHBOARD</h1>
+
 <div id="gauche">
             <h2></h2>
                 <ul>
                     <li>Menu</li>
                         <ul>
-                        <li><a href="clientDashboard.php">Accueil</a></li>
-                        <li><a href="callTrackingClient.php">CallTracking</a></li>
-                        <li><a href="AnalyticsClient.php">Google Analytics</a></li>
-                        <li><a href="InstagramClient.php">Instagram</a></li>
-                        <li><a href="settingClient.php">Profil</a></li>
-                        <li><a href="changepwdClient.php">Sécurité</a></li>
+                            <li><a href="adminClient.php">Client</a></li>
+                            <li><a href="profilTB.php">Mon profil</a></li>
+                            <li><a href="changepwd.php">Sécurité</a></li>
                         </ul>
                 </ul>
         </div>
 <div id="droite">
-    <form id= "conseiller" name="conseiller">
-        <h1>Votre conseiller</h1>
-<?php
-echo getCommercialClient($_SESSION['id']);
-?>
-</form>
-</div>
-</body>
-</html>

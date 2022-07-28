@@ -26,8 +26,10 @@
                             <li><a href="addClient.php">Ajouter un client</a></li>
                             <li><a href="modifClient.php">Modifier un client</a></li>
                             <li><a href=".php">Demo</a></li>
-                            <li><a href=".php">Offres</a></li>
-                            <li><a href=".php">Reglages</a></li>
+                            <li><a href="offres.php">Offres</a></li>
+                            <li><a href="profilTB.php">Mon profil</a></li>
+                            <li><a href="changepwd.php">Sécurité</a></li>
+
                         </ul>
                 </ul>
         </div>

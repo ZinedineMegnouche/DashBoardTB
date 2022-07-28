@@ -2,10 +2,7 @@
 require 'Include/functions.php';
 require 'Include/SourceDonnees.inc.php';
 require 'Include/helpersLibrary.inc.php';
-if (!isset($_SESSION)) {
-    session_start();
-}
-
+session_start();
 ?>
 <html>
     <head>
@@ -20,13 +17,12 @@ if (!isset($_SESSION)) {
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     </head>
     <body>
-<a href='principale.php?deconnexion=true'><span>Déconnexion</span></a>
-<h1>CLIENT DASHBOARD</h1>
-<?php
+    <a href='principale.php?deconnexion=true'><span>Déconnexion</span></a>
+
+    <?php
 echo "<p>Bonjour," . $_SESSION['username'] . "</p>";
 ?>
-<div id="gauche">
-            <h2></h2>
+    <div id="gauche">
                 <ul>
                     <li>Menu</li>
                         <ul>
@@ -39,13 +35,32 @@ echo "<p>Bonjour," . $_SESSION['username'] . "</p>";
                         </ul>
                 </ul>
         </div>
-<div id="droite">
-    <form id= "conseiller" name="conseiller">
-        <h1>Votre conseiller</h1>
-<?php
-echo getCommercialClient($_SESSION['id']);
-?>
+        <div id="droite">
+            <h1>Sécurité</h1>
+            <h2>Modification de mot de passe </h2>
+            <form name="changePWD" method="post">
+<input type="password" placeholder="Entrer le mot de passe" name="password" required>
+<input type="password" placeholder="confirmer le mot de passe" name="confirmpassword" required>
+<?php echo formBoutonSubmit('btnSubmit1', 'btnSubmit1', 'OK', 20); ?>
 </form>
-</div>
-</body>
+<?php
+
+if (isset($_POST['btnSubmit1'])) {
+    $password = $_REQUEST['password'];
+    $uppercase = preg_match('@[A-Z]@', $password);
+    $lowercase = preg_match('@[a-z]@', $password);
+    $number = preg_match('@[0-9]@', $password);
+    if ($_REQUEST['password'] != $_REQUEST['confirmpassword']) {
+        echo "<p style='color:red'>Mot de passe différent</p>";
+    } else if (!$uppercase || !$lowercase || !$number || strlen($password) < 8) {
+        echo "<p style='color:red'>Le mot de passe doit contenir 8 caractères, avec au moins 1 majuscule et un nombre</p>";
+    } else {
+        modifpwdClient($_SESSION['id'], $_REQUEST['password']);
+    }
+}
+
+?>
+
+        </div>
+    </body>
 </html>

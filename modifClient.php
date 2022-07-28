@@ -15,13 +15,22 @@ $_SESSION['username'] = "zinedine";
 $_SESSION['mail'] = "zinedine.megnouche@tickandbox.com";
 $_SESSION['profil'] = 'tb';*/
 
+$isAdmin = false;
 if ($_SESSION['restraint'] == 1) {
-    require_once 'adminDashboard.php';
+    if ($_SESSION['poste'] == "Administrateur") {
+        require_once 'adminDashboard.php';
+    } else if ($_SESSION['poste'] == "Commercial") {
+        require_once 'comDashboard.php';
+        return;
+    }
+
 } else {
-    require_once 'adminDashboard.php';
-    if (isset($_GET['id'])) {
-        $_SESSION['id'] = $_GET['id'];}
-    $id = $_SESSION['id'];
+    if ($_SESSION['poste'] == "Administrateur") {
+        require_once 'adminDashboard.php';
+        $isAdmin = true;
+    } else if ($_SESSION['poste'] == "Commercial") {
+        require_once 'comDashboard.php';
+    }
     ?>
 
     <h2>Modif Client</h2>
@@ -29,12 +38,19 @@ if ($_SESSION['restraint'] == 1) {
 
     <form name="lstClient" method="post">
     <?php
-    if(isset($_REQUEST['lstClient'])){
-        echo createSelect('lstClient', 'lstClient', 'Mes clients: ', 10, getListClientAdmin(),$_REQUEST['lstClient']);
+if (isset($_REQUEST['lstClient'])) {
+        if ($isAdmin) {
+            echo createSelect('lstClient', 'lstClient', 'Mes clients: ', 10, getListClientAdmin(), $_REQUEST['lstClient']);
+        } else {
+            echo createSelect('lstClient', 'lstClient', 'Mes clients: ', 10, getListClient($_SESSION['id']), $_REQUEST['lstClient']);
+        }
         echo formBoutonSubmit('btnSubmit1', 'btnSubmit1', 'OK', 20);
-    }
-    else{
-        echo createSelect('lstClient', 'lstClient', 'Mes clients: ', 10, getListClientAdmin());
+    } else {
+        if ($isAdmin) {
+            echo createSelect('lstClient', 'lstClient', 'Mes clients: ', 10, getListClientAdmin());
+        } else {
+            echo createSelect('lstClient', 'lstClient', 'Mes clients: ', 10, getListClient($_SESSION['id']));
+        }
         echo formBoutonSubmit('btnSubmit1', 'btnSubmit1', 'OK', 20);
     }
 
@@ -52,6 +68,8 @@ if ($_SESSION['restraint'] == 1) {
         echo formInputText2('Telephone', 'phone', 'phone', $client['tel'], 10, 10, 10, 40, false, false);
         echo formInputText2('Adresse', 'adress', 'adress', $client['adress'], 50, 2, 250, 50, false, false);
         echo formInputText2('Ville', 'localisation', 'localisation', $client['localisation'], 50, 2, 50, 50, false, false);
+        echo formInputText2('Google Analyctics', 'anaylics', 'analytics', $client['analytics'], 50, 2, 50, 50, false, false);
+
         //compte GMB
         //compte insta
         //compte analytics
@@ -61,34 +79,31 @@ if ($_SESSION['restraint'] == 1) {
         //contrat
         //idTB
         echo formInputText2('Siret', 'siret', 'siret', $client['SIRET'], 13, 13, 13, 60, false, false);
-        echo createSelect('forfait', 'forfait', 'Forfait', 70, getForfait(),$client['idForfait']);
+        echo createSelect('forfait', 'forfait', 'Forfait', 70, getForfait(), $client['idForfait']);
         echo '<label for="dureeContrat">Durée du contrat:</label>
         <select name= "dureeContrat" id="dureeContrat" tabindex="60">';
         echo '<option value="12" ';
-        if($client['dureeEngagement'] == '12'){
+        if ($client['dureeEngagement'] == '12') {
             echo ' selected>12 mois</option>';
-        }
-        else{
-        echo '>12 mois</option>';
+        } else {
+            echo '>12 mois</option>';
         }
         echo '<option value="24" ';
-        if($client['dureeEngagement'] == '24'){
+        if ($client['dureeEngagement'] == '24') {
             echo ' selected>24 mois</option>';
-        }
-        else{
-        echo ' >24 mois</option>';
+        } else {
+            echo ' >24 mois</option>';
         }
         echo '<option value="36" ';
-        if($client['dureeEngagement'] == '36'){
+        if ($client['dureeEngagement'] == '36') {
             echo ' selected>36 mois</option>';
+        } else {
+            echo ' >36 mois</option>';
         }
-        else{
-        echo ' >36 mois</option>';
-        }
-            
+
         echo '</select>';
         echo '<label for="dateSignature">Date de signature :</label><input type="date" id = "dateSignature" value ="' . $client['dateSignature'] . '" name = "dateSignature"></br>';
-        echo createSelect('secteurActivite', 'secteurActivite', 'Secteur d\'activité', 50, getSecteurActivite(),$client['idSecteur']);
+        echo createSelect('secteurActivite', 'secteurActivite', 'Secteur d\'activité', 50, getSecteurActivite(), $client['idSecteur']);
         echo formInputHidden('idClient', 'idClient', $_REQUEST['lstClient']);
         echo formBoutonSubmit('btnSubmit', 'btnSubmit', 'OK', 60);
         echo ' <div class="container">
@@ -109,8 +124,6 @@ if ($_SESSION['restraint'] == 1) {
         echo '</form>';
     }
 
-    
-
     if (isset($_POST["btnSubmit"])) {
         if (isset($_REQUEST['Name']) && isset($_REQUEST['adress']) && isset($_REQUEST['Enterprise']) && isset($_REQUEST['mail']) && isset($_REQUEST['dateSignature']) && isset($_REQUEST['secteurActivite']) && isset($_REQUEST['phone']) && isset($_REQUEST['siret']) && isset($_REQUEST['dureeContrat']) && isset($_REQUEST['forfait']) && isset($_REQUEST['localisation'])) {
             $Name = $_REQUEST['Name'];
@@ -126,7 +139,7 @@ if ($_SESSION['restraint'] == 1) {
             $localisation = $_REQUEST['localisation'];
             $dureeEngagement = $_REQUEST['dureeContrat'];
             $compteGMB = ' non';
-            $compteAnalytics = ' non';
+            $compteAnalytics = $_REQUEST['anaylics'];
             $compteInsta = ' non';
             $mandatSepa = ' non';
             $cni = ' non';
@@ -161,7 +174,6 @@ if ($_SESSION['restraint'] == 1) {
             $idClient = $_REQUEST['idClient'];
             echo "idClient = " . $idClient;
             modifyClient($idClient, $Name, $Entreprise, $mail, $phone, $photo, $localisation, $adresse, $dateSignature, $dureeEngagement, $compteGMB, $compteInsta, $compteAnalytics, $mandatSepa, $cni, $rib, $contrat, $siret, $forfait, $secteurActivite);
-            //addClient($Name, $Entreprise, $mail, $phone, $photo, $localisation, $adresse, $dateSignature, $dureeEngagement, $compteGMB, $compteInsta, $compteAnalytics, $mandatSepa, $cni, $rib, $contrat, $siret, $forfait, $secteurActivite, $idTB);
         }
     }
 }

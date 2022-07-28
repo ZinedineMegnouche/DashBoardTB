@@ -9,13 +9,21 @@
 require 'Include/functions.php';
 require 'Include/SourceDonnees.inc.php';
 session_start();
-if($_SESSION['restraint'] != 1){
-require_once 'adminDashboard.php';
-echo '<h2>Employé</h2>';
-getEmployee();
-}
-else{
-    require_once 'adminDashboard.php';
+if ($_SESSION['restraint'] != 1) {
+    if ($_SESSION['poste'] == "Administrateur") {
+        require_once 'adminDashboard.php';
+    } else if ($_SESSION['poste'] == "Ressource Humaines") {
+        require_once 'rhDashboard.php';
+    }
+    echo '<h2>Employé</h2>';
+    getEmployee();
+} else {
+    if ($_SESSION['poste'] == "Administrateur") {
+        require_once 'adminDashboard.php';
+    } else if ($_SESSION['poste'] == "Ressource Humaines") {
+        require_once 'rhDashboard.php';
+    }
+
     echo '<h2>Employé</h2>';
 }
 ?>
@@ -25,7 +33,7 @@ else{
 </div>
 <!--<script>
 
-var divderoulante = document.getElementById('com'); 
+var divderoulante = document.getElementById('com');
 divderoulante.addEventListener("click"){
 
 }

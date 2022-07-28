@@ -8,14 +8,21 @@
 <?php
 require 'Include/SourceDonnees.inc.php';
 session_start();
-if($_SESSION['restraint'] != 1){
-require_once 'adminDashboard.php';
-echo '<h2>Client</h2>';
-getClient();
-}
-else{
-    require_once 'adminDashboard.php';
+if ($_SESSION['restraint'] != 1) {
+    if ($_SESSION['poste'] == "Administrateur") {
+        require_once 'adminDashboard.php';
+    } else if ($_SESSION['poste'] == "Chef de projet" || $_SESSION['poste'] == "Producteur") {
+        require_once 'prodDashboard.php';
+    }
     echo '<h2>Client</h2>';
+    getClient();
+} else {
+    if ($_SESSION['poste'] == "Administrateur") {
+        require_once 'adminDashboard.php';
+    } else if ($_SESSION['poste'] == "Chef de projet" || $_SESSION['poste'] == "Producteur") {
+        require_once 'prodDashboard.php';
+    }
+
 }
 ?>
 </div>

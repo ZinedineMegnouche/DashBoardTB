@@ -26,10 +26,12 @@ echo "<p>Bonjour," . $_SESSION['username'] . "</p>";
                 <ul>
                     <li>Menu</li>
                         <ul>
+						<li><a href="clientDashboard.php">Accueil</a></li>
                         <li><a href="callTrackingClient.php">CallTracking</a></li>
                         <li><a href="AnalyticsClient.php">Google Analytics</a></li>
 						<li><a href="InstagramClient.php">Instagram</a></li>
-                        <li><a href="settingClient.php">Paramètre</a></li>
+                        <li><a href="settingClient.php">Profil</a></li>
+						<li><a href="changepwdClient.php">Sécurité</a></li>
                         </ul>
                 </ul>
         </div>
